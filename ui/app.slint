@@ -1,0 +1,110 @@
+import { LineEdit, TextEdit, Button, VerticalBox, GridBox } from "std-widgets.slint";
+
+export component App inherits Window {
+    title: "Quadratic Formula Solver";
+    icon: @image-url("icon.svg");
+    min-width: 420px;
+    min-height: 380px;
+    default-font-size: 16px;
+
+    in-out property <string> result-text: "Enter coefficients and press Solve.";
+    in-out property <string> a-value: "";
+    in-out property <string> b-value: "";
+    in-out property <string> c-value: "";
+
+    callback solve();
+
+    VerticalLayout {
+        padding: 24px;
+        spacing: 16px;
+        alignment: start;
+
+        Text {
+            text: "Quadratic Formula Solver";
+            font-size: 22px;
+            font-weight: 700;
+            horizontal-alignment: center;
+            accessible-role: text;
+            accessible-label: "Quadratic Formula Solver";
+        }
+
+        Text {
+            text: "Solves ax² + bx + c = 0";
+            horizontal-alignment: center;
+            accessible-role: text;
+            accessible-label: "Solves a x squared plus b x plus c equals zero";
+        }
+
+        GridLayout {
+            spacing: 12px;
+            padding-top: 8px;
+
+            Row {
+                Text {
+                    text: "a:";
+                    vertical-alignment: center;
+                    accessible-role: text;
+                    accessible-label: "Coefficient a";
+                }
+                input-a := LineEdit {
+                    placeholder-text: "coefficient a";
+                    text <=> a-value;
+                    accessible-label: "Coefficient a";
+                    accessible-description: "Enter the coefficient for x squared";
+                }
+            }
+            Row {
+                Text {
+                    text: "b:";
+                    vertical-alignment: center;
+                    accessible-role: text;
+                    accessible-label: "Coefficient b";
+                }
+                input-b := LineEdit {
+                    placeholder-text: "coefficient b";
+                    text <=> b-value;
+                    accessible-label: "Coefficient b";
+                    accessible-description: "Enter the coefficient for x";
+                }
+            }
+            Row {
+                Text {
+                    text: "c:";
+                    vertical-alignment: center;
+                    accessible-role: text;
+                    accessible-label: "Coefficient c";
+                }
+                input-c := LineEdit {
+                    placeholder-text: "coefficient c";
+                    text <=> c-value;
+                    accessible-label: "Coefficient c";
+                    accessible-description: "Enter the constant term";
+                }
+            }
+        }
+
+        HorizontalLayout {
+            alignment: center;
+            padding-top: 8px;
+
+            solve-btn := Button {
+                text: "Solve";
+                accessible-label: "Solve quadratic equation";
+                accessible-description: "Calculate the roots of the quadratic equation with the given coefficients";
+                clicked => {
+                    root.solve();
+                    result-field.focus();
+                    result-field.select-all();
+                }
+            }
+        }
+
+        result-field := TextEdit {
+            min-height: 80px;
+            text: root.result-text;
+            read-only: true;
+            accessible-label: "Result";
+            accessible-description: root.result-text;
+        }
+    }
+}

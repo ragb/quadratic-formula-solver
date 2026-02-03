@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background -->
+  <rect width="128" height="128" rx="16" fill="#2b2d42"/>
+
+  <!-- Grid lines -->
+  <line x1="64" y1="12" x2="64" y2="116" stroke="#8d99ae" stroke-width="1" opacity="0.3"/>
+  <line x1="12" y1="90" x2="116" y2="90" stroke="#8d99ae" stroke-width="1" opacity="0.3"/>
+
+  <!-- Parabola (x^2 curve) -->
+  <path d="M 20,22 Q 64,110 108,22" fill="none" stroke="#edf2f4" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Heart -->
+  <path d="M 64,72 C 64,68 58,58 50,58 C 42,58 38,65 38,70 C 38,80 64,96 64,96 C 64,96 90,80 90,70 C 90,65 86,58 78,58 C 70,58 64,68 64,72 Z" fill="#ef233c" opacity="0.9"/>
+</svg>

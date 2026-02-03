@@ -1,0 +1,5 @@
+/target
+installer/*.exe
+installer/*.ico
+.claude/
+nul
