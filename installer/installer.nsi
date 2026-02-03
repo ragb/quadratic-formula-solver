@@ -2,8 +2,13 @@
 
 !include "MUI2.nsh"
 
+; ---- Version ----
+!ifndef VERSION
+    !define VERSION "0.1.0"
+!endif
+
 ; ---- General ----
-Name "Quadratic Formula Solver"
+Name "Quadratic Formula Solver ${VERSION}"
 OutFile "QuadraticFormulaSolver-Setup.exe"
 InstallDir "$PROGRAMFILES\Quadratic Formula Solver"
 InstallDirRegKey HKLM "Software\Quadratic Formula Solver" "InstallDir"
@@ -59,6 +64,8 @@ Section "Install"
         "Publisher" "Quadratic Formula Solver"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuadraticFormulaSolver" \
         "InstallLocation" "$INSTDIR"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuadraticFormulaSolver" \
+        "DisplayVersion" "${VERSION}"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuadraticFormulaSolver" \
         "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuadraticFormulaSolver" \

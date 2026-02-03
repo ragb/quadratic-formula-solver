@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Convert icon to ICO
+        run: |
+          pip install Pillow
+          python -c "
+          from PIL import Image, ImageDraw
+          import struct, io
+
+          ico_path = 'installer/icon.ico'
+
+          def create_icon(size):
+              img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+              draw = ImageDraw.Draw(img)
+              s = size
+              r = int(s * 16/128)
+              bg = (43, 45, 66, 255)
+              draw.rounded_rectangle([0, 0, s-1, s-1], radius=r, fill=bg)
+              grid_color = (141, 153, 174, 77)
+              cx, cy_axis = s//2, int(s * 90/128)
+              draw.line([(cx, int(s*12/128)), (cx, int(s*116/128))], fill=grid_color, width=max(1, s//128))
+              draw.line([(int(s*12/128), cy_axis), (int(s*116/128), cy_axis)], fill=grid_color, width=max(1, s//128))
+              white = (237, 242, 244, 255)
+              points = []
+              for i in range(50):
+                  t = i / 49.0
+                  x = (1-t)**2 * 20 + 2*(1-t)*t * 64 + t**2 * 108
+                  y = (1-t)**2 * 22 + 2*(1-t)*t * 110 + t**2 * 22
+                  points.append((x * s / 128, y * s / 128))
+              w = max(1, int(4 * s / 128))
+              for i in range(len(points)-1):
+                  draw.line([points[i], points[i+1]], fill=white, width=w)
+              red = (239, 35, 60, 230)
+              heart_svg = [
+                  (64,72), (62,68), (58,62), (54,59), (50,58),
+                  (46,58), (42,60), (39,63), (38,66), (38,70),
+                  (40,76), (46,82), (52,88), (58,92), (64,96),
+                  (70,92), (76,88), (82,82), (88,76), (90,70),
+                  (90,66), (89,63), (86,60), (82,58), (78,58),
+                  (74,59), (70,62), (66,68), (64,72)
+              ]
+              scaled = [(x * s / 128, y * s / 128) for x, y in heart_svg]
+              if len(scaled) >= 3:
+                  draw.polygon(scaled, fill=red)
+              return img
+
+          sizes = [16, 32, 48, 64, 128, 256]
+          images = [create_icon(s) for s in sizes]
+          images[-1].save(ico_path, format='ICO', sizes=[(s, s) for s in sizes], append_images=images[:-1])
+          print(f'Created {ico_path}')
+          "
+
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build installer
+        run: |
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /DVERSION=${{ steps.version.outputs.version }} installer\installer.nsi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/QuadraticFormulaSolver-Setup.exe
+          generate_release_notes: true
