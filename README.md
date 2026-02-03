@@ -1,8 +1,8 @@
 # Quadratic Formula Solver
 
-A desktop application that solves quadratic equations (ax² + bx + c = 0) using the [Slint](https://slint.dev/) UI framework and Rust.
+A test project exploring [Slint](https://slint.dev/) UI accessibility features, built entirely using [Claude Code](https://claude.ai/claude-code).
 
-Handles real roots, repeated roots, complex roots, linear equations, and degenerate cases.
+The app solves quadratic equations (ax² + bx + c = 0), handling real roots, repeated roots, complex roots, linear equations, and degenerate cases. It serves as a testbed for evaluating Slint's accessibility support (ARIA roles, labels, descriptions) with screen readers on Windows.
 
 ## Building
 
